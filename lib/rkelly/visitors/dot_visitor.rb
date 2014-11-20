@@ -195,7 +195,7 @@ module RKelly
         end
       end
 
-      %w{ FunctionExprNode FunctionDeclNode }.each do |type|
+      %w{ FunctionExprNode FunctionDeclNode ArrowFunctionExprNode }.each do |type|
         define_method(:"visit_#{type}") do |o|
           node = Node.new(@node_index += 1, [type, o.value || 'NULL'])
           add_arrow_for(node)

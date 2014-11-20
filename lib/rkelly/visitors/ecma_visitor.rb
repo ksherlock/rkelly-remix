@@ -86,6 +86,11 @@ module RKelly
         "null"
       end
 
+      def visit_ArrowFunctionExprNode(o)
+        "(#{o.arguments.map { |x| x.accept(self) }.join(', ')}) => " +
+          "#{o.function_body.accept(self)}"
+      end
+
       def visit_FunctionDeclNode(o)
         "#{indent}function #{o.value}" + function_params_and_body(o)
       end

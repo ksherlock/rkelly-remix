@@ -29,6 +29,7 @@ token ANDEQUAL MODEQUAL           /* &= and %= */
 token XOREQUAL OREQUAL            /* ^= and |= */
 
 token DOTDOTDOT                   /* ... */
+token ARROW                       /* => */
 
 /* Terminal types */
 token REGEXP
@@ -130,7 +131,55 @@ rule
   | Literal
   | ArrayLiteral
   | IDENT         { result = ResolveNode.new(val.first) }
-  | '(' Expr ')'  { result = ParentheticalNode.new(val[1]) }
+  | ParenExpr
+  ;
+
+  ParenExpr:
+    ParenExprOrArrowList {
+      # supplemental syntax check!
+      # convert to a ParentheticalNode
+      # an empty list or a RestParameter is an error.
+
+      tmp = val[0]
+
+      raise RKelly::SyntaxError unless tmp.length == 1
+      raise RKelly::SyntaxError if tmp.last.is_a? RestParameterNode
+
+      result = ParentheticalNode.new(tmp[0])
+    }
+  ;
+
+  ArrowList:
+    ParenExprOrArrowList {
+      # suppmental syntax check!
+      # tmp[0] is an Expr and needs to
+      # be converted to a parameter array.
+      # Comma Nodes must be expanded.
+      # tmp[0] or tmp[1] may be a RestParameterNode.
+
+      tmp = val[0]
+      args = []
+
+      rest = nil
+      rest = tmp.pop if tmp.last.is_a? RestParameterNode
+
+      args = comma_to_array(tmp[0]) unless tmp.empty?
+      # 
+      raise RKelly::SyntaxError unless args.all? {|x| x.is_a? ResolveNode }
+
+      args = args.map {|x| ParameterNode.new x.value }
+      args.push(rest) if rest
+
+      result = args
+    }
+  ;
+
+  ParenExprOrArrowList:
+    '(' Expr ')'                     { result = [val[1]] }
+  | '(' ')'                          { result = [] }
+  | '(' DOTDOTDOT IDENT ')'          { result = [RestParameterNode.new(val[2])] }
+  | '(' Expr ',' DOTDOTDOT IDENT ')' { result = [val[1], RestParameterNode.new(val[4])]
+    }
   ;
 
   ArrayLiteral:
@@ -468,6 +517,7 @@ rule
 
   AssignmentExpr:
     ConditionalExpr
+  | ArrowFunction
   | LeftHandSideExpr AssignmentOperator AssignmentExpr {
       result = val[1].new(val.first, val.last)
     }
@@ -475,6 +525,7 @@ rule
 
   AssignmentExprNoIn:
     ConditionalExprNoIn
+  | ArrowFunction
   | LeftHandSideExpr AssignmentOperator AssignmentExprNoIn {
       result = val[1].new(val.first, val.last)
     }
@@ -482,6 +533,7 @@ rule
 
   AssignmentExprNoBF:
     ConditionalExprNoBF
+  | ArrowFunction
   | LeftHandSideExprNoBF AssignmentOperator AssignmentExpr {
       result = val[1].new(val.first, val.last)
     }
@@ -849,9 +901,36 @@ rule
     }
   ;
 
+  ArrowFunction:
+    ArrowParameters ARROW ConciseBody {
+      result = ArrowFunctionExprNode.new(val[2], val[0])
+    }
+  ;
+
+  /*
+   * The ArrowFormalParameters production requires GLR parsing or equivalent to 
+   * disambiguate against the other right-hand sides of AssignmentExpression. 
+   * For an LR(1) grammar, we can use:
+   *
+   * ArrowFormalParameters :
+   *   ( Expression_opt )
+   *
+   * and write Supplemental Syntax to require that Expression reductions match 
+   * FormalParameterList.
+   */
+  ArrowParameters:
+    IDENT                        { result = [ParameterNode.new(val[0])]}
+  | ArrowList
+  ;
+
+  ConciseBody:
+    AssignmentExpr
+  | FunctionBody
+  ;
+
   FormalParameterList:
     FunctionRestParameter              { result = [val[0]] }
-  | FormalsList                        { result = val[0] }
+  | FormalsList
   | FormalsList ',' FunctionRestParameter  {
       result = [val.first, val.last].flatten
     }
@@ -891,6 +970,24 @@ end
       SetterPropertyNode
     end
   end
+
+  def comma_to_array(o)
+    # convert an CommaNode expr into a list of identifiers.
+    # doesn't need to worry about weird edge cases because
+    # anything other than a simple list of identifiers is
+    # an error.
+
+    return [] unless o
+    rv = []
+    while o.is_a? CommaNode
+      rv.push o.value
+      o = o.left
+    end
+    rv.push o
+    return rv.reverse
+
+  end
+
 
   def debug(*args)
     logger.debug(*args) if logger

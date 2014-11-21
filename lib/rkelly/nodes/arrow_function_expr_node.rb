@@ -3,7 +3,7 @@ module RKelly
     class ArrowFunctionExprNode < FunctionExprNode
       # body may be a function body or an expression.
       def initialize(body, args = [])
-        super("function", body, args)
+        super(nil, body, args)
       end
 
       def statement?

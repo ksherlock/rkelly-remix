@@ -2,7 +2,7 @@ module RKelly
   module Visitors
     class Visitor
       TERMINAL_NODES = %w{
-        Break Continue EmptyStatement False Null Number Parameter Regexp Resolve
+        Break Continue EmptyStatement False Null Number Parameter RestParameter Regexp Resolve
         String This True
       }
       SINGLE_VALUE_NODES = %w{

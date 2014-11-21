@@ -31,7 +31,7 @@ module RKelly
       ## Terminal nodes
       %w{
         BreakNode ContinueNode EmptyStatementNode FalseNode
-        NullNode NumberNode ParameterNode RegexpNode ResolveNode StringNode
+        NullNode NumberNode ParameterNode RegexpNode ResolveNode RestParameterNode StringNode
         ThisNode TrueNode
       }.each do |type|
         define_method(:"visit_#{type}") do |o|

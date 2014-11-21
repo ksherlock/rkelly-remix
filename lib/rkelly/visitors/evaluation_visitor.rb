@@ -289,7 +289,7 @@ module RKelly
         OpLShiftEqualNode OpMinusEqualNode OpModEqualNode
         OpMultiplyEqualNode OpOrEqualNode OpRShiftEqualNode
         OpURShiftEqualNode OpXOrEqualNode ParameterNode
-        PropertyNode RegexpNode RightShiftNode
+        PropertyNode RegexpNode RestParameterNode RightShiftNode
         SetterPropertyNode StrictEqualNode
         SwitchNode ThrowNode TryNode
         UnsignedRightShiftNode

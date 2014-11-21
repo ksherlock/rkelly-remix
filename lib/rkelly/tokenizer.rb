@@ -50,6 +50,7 @@ module RKelly
       '-='  => :MINUSEQUAL,
       '*='  => :MULTEQUAL,
       '/='  => :DIVEQUAL,
+      '...' => :DOTDOTDOT,
     }
 
     # Some keywords can be followed by regular expressions (eg, return and throw).
@@ -175,7 +176,7 @@ module RKelly
       literal_chars = LITERALS.keys.map {|k| k.slice(0,1) }.uniq
       literal_regex = Regexp.new(LITERALS.keys.sort_by { |x|
           x.length
-        }.reverse.map { |x| "#{x.gsub(/([|+*^])/, '\\\\\1')}" }.join('|'))
+        }.reverse.map { |x| "#{x.gsub(/([|+*^.])/, '\\\\\1')}" }.join('|'))
       token(:LITERALS, literal_regex, literal_chars) do |type, value|
         [LITERALS[value], value]
       end

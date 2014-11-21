@@ -67,6 +67,27 @@ class ParserTest < Test::Unit::TestCase
                 @parser.parse("var foo = function(a,b) { }"))
   end
 
+  def test_function_expr_anon_rest_arg
+    assert_sexp(
+                [[:var,
+                  [[:var_decl, :foo, [:assign,
+                    [:func_expr, "function", [[:rest_param, "a"]], [:func_body, []]]
+                  ]]]
+                ]],
+                @parser.parse("var foo = function(...a) { }"))
+  end
+
+  def test_function_expr_anon_arg_rest_arg
+    assert_sexp(
+                [[:var,
+                  [[:var_decl, :foo, [:assign,
+                    [:func_expr, "function", [[:param, "a"], [:rest_param, "b"]], [:func_body, []]]
+                  ]]]
+                ]],
+                @parser.parse("var foo = function(a, ...b) { }"))
+  end
+
+
   def test_function_expr_no_args
     assert_sexp(
                 [[:var,
@@ -86,6 +107,27 @@ class ParserTest < Test::Unit::TestCase
                 ]],
                 @parser.parse("var foo = function aaron(a, b) { }"))
   end
+
+  def test_function_expr_with_rest_args
+    assert_sexp(
+                [[:var,
+                  [[:var_decl, :foo, [:assign,
+                    [:func_expr, 'aaron', [[:rest_param, 'a']], [:func_body, []]]
+                  ]]]
+                ]],
+                @parser.parse("var foo = function aaron(...a) { }"))
+  end
+
+  def test_function_expr_with_args_rest_args
+    assert_sexp(
+                [[:var,
+                  [[:var_decl, :foo, [:assign,
+                    [:func_expr, 'aaron', [[:param, 'a'], [:rest_param, 'b']], [:func_body, []]]
+                  ]]]
+                ]],
+                @parser.parse("var foo = function aaron(a, ...b) { }"))
+  end
+
 
   def test_labelled_statement
     assert_sexp([[:label, :foo, [:var, [[:var_decl, :x, [:assign, [:lit, 10]]]]]]],

@@ -94,6 +94,10 @@ module RKelly
         o.value
       end
 
+      def visit_RestParameterNode(o)
+        "...#{o.value}"
+      end
+
       def visit_FunctionBodyNode(o)
         @indent += 1
         "{\n#{o.value.accept(self)}\n#{@indent -=1; indent}}"

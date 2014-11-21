@@ -28,6 +28,8 @@ token RSHIFTEQUAL URSHIFTEQUAL    /* >>= and >>>= */
 token ANDEQUAL MODEQUAL           /* &= and %= */
 token XOREQUAL OREQUAL            /* ^= and |= */
 
+token DOTDOTDOT                   /* ... */
+
 /* Terminal types */
 token REGEXP
 token NUMBER
@@ -848,8 +850,20 @@ rule
   ;
 
   FormalParameterList:
+    FunctionRestParameter              { result = [val[0]] }
+  | FormalsList                        { result = val[0] }
+  | FormalsList ',' FunctionRestParameter  {
+      result = [val.first, val.last].flatten
+    }
+  ;
+
+  FunctionRestParameter:
+     DOTDOTDOT IDENT                   { result = RestParameterNode.new(val[1]) }
+  ;
+
+  FormalsList:
     IDENT                               { result = [ParameterNode.new(val[0])] }
-  | FormalParameterList ',' IDENT       {
+  | FormalsList ',' IDENT               {
       result = [val.first, ParameterNode.new(val.last)].flatten
     }
   ;

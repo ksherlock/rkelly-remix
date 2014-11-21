@@ -225,6 +225,10 @@ module RKelly
         [:param, o.value]
       end
 
+      def visit_RestParameterNode(o)
+        [:rest_param, o.value]
+      end
+
       def visit_BreakNode(o)
         [:break, o.value].compact
       end

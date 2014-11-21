@@ -106,7 +106,7 @@ edge [ ];
     %w[EmptyStatement Parenthetical ExpressionStatement True Delete Return TypeOf
        SourceElements Number LogicalNot AssignExpr FunctionBody
        ObjectLiteral UnaryMinus Throw This BitwiseNot Element String
-       Array CaseBlock Null Break Parameter Block False Void Regexp
+       Array CaseBlock Null Break Parameter RestParameter Block False Void Regexp
        Arguments Attr Continue ConstStatement UnaryPlus VarStatement].each do |node|
       eval "class #{node}Node < Node; end"
     end

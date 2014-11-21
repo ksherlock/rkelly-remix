@@ -32,7 +32,7 @@ module RKelly
         OpEqualNode OpLShiftEqualNode OpMinusEqualNode OpModEqualNode
         OpMultiplyEqualNode OpOrEqualNode OpPlusEqualNode OpRShiftEqualNode
         OpURShiftEqualNode OpXOrEqualNode ParameterNode PostfixNode PrefixNode
-        PropertyNode RegexpNode ResolveNode ReturnNode RightShiftNode
+        PropertyNode RegexpNode ResolveNode RestParameterNode ReturnNode RightShiftNode
         SetterPropertyNode StrictEqualNode StringNode
         SubtractNode SwitchNode ThisNode ThrowNode TrueNode TryNode TypeOfNode
         UnaryMinusNode UnaryPlusNode UnsignedRightShiftNode VarDeclNode

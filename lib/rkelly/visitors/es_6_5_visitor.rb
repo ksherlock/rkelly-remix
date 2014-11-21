@@ -26,6 +26,9 @@ module RKelly
         restName = rest.value
         restOffset = args.length
 
+        # could get fancy and check if the variable is actually used.
+        # seems like most of the time it should be used, though.
+        
         # var #{restName} = Array.prototype.slice(argument, #{restOffset});
         newCode = VarStatementNode.new([
           VarDeclNode.new(
@@ -81,6 +84,59 @@ module RKelly
       def visit_SetterPropertyNode(o)
         node = SetterProperyNode.new(o.name, fxtransform(o.value))
         super(node)
+      end
+
+
+      def visit_ArrowFunctionExprNode(o)
+        # arrow function expression.  shortcut for function expression
+        # but also binds `this`.  Body may be a body or an expression.
+        #
+        # (args) => { ... } -> function(args) {}.bind(this)
+        # (args) => expr -> function(args) { return expr }.bind(this)
+        #
+
+        fx = nil
+        args = o.arguments
+        fxbody = nil
+
+        if o.expression?
+
+          fxbody = FunctionBodyNode.new(
+            SourceElementsNode.new([
+              ReturnNode.new(
+                o.function_body
+              )
+            ])
+          )
+
+        else
+
+          fxbody = o.function_body
+
+        end
+
+        node = FunctionExprNode.new("function", fxbody, args)
+
+
+        # only need to bind if `this` is used in the function.
+        must_bind = false
+        fxbody.each {|x|
+          must_bind = true if x.is_a? ThisNode
+        }
+
+        
+        node = FunctionCallNode.new(
+          DotAccessorNode.new(
+              node,
+              "bind"
+            ),
+            ArgumentsNode.new([
+              ThisNode.new("this")
+            ])
+        ) if must_bind
+
+        node.accept(self)
+
       end
 
     end

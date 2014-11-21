@@ -345,6 +345,11 @@ module RKelly
         [ :func_decl, *super]
       end
 
+      def visit_ArrowFunctionExprNode(o)
+        [ :arrow_func, *super]
+      end
+
+
       def visit_ArgumentsNode(o)
         [:args, super]
       end

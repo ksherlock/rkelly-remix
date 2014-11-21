@@ -275,7 +275,7 @@ module RKelly
       end
 
       %w{
-        ArrayNode BitAndNode BitOrNode
+        ArrayNode ArrowFunctionExprNode BitAndNode BitOrNode
         BitXOrNode BracketAccessorNode BreakNode
         CaseBlockNode CaseClauseNode CommaNode ConditionalNode
         ConstStatementNode ContinueNode DeleteNode

@@ -28,7 +28,7 @@ module RKelly
       PREFIX_POSTFIX_NODES  = %w{ Postfix Prefix }
       CONDITIONAL_NODES     = %w{ If Conditional }
       FUNC_CALL_NODES       = %w{ NewExpr FunctionCall }
-      FUNC_DECL_NODES       = %w{ FunctionExpr FunctionDecl }
+      FUNC_DECL_NODES       = %w{ FunctionExpr FunctionDecl ArrowFunctionExpr }
       ALL_NODES = %w{ For ForIn Try BracketAccessor DotAccessor } +
         TERMINAL_NODES + SINGLE_VALUE_NODES + BINARY_NODES + ARRAY_VALUE_NODES +
         NAME_VALUE_NODES + PREFIX_POSTFIX_NODES + CONDITIONAL_NODES +

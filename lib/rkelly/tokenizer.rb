@@ -51,6 +51,7 @@ module RKelly
       '*='  => :MULTEQUAL,
       '/='  => :DIVEQUAL,
       '...' => :DOTDOTDOT,
+      '=>'  => :ARROW,
     }
 
     # Some keywords can be followed by regular expressions (eg, return and throw).

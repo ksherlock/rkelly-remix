@@ -1,5 +1,6 @@
 require 'rkelly/nodes/node'
 require 'rkelly/nodes/function_expr_node'
+require 'rkelly/nodes/arrow_function_expr_node'
 require 'rkelly/nodes/binary_node'
 require 'rkelly/nodes/bracket_accessor_node'
 require 'rkelly/nodes/case_clause_node'
